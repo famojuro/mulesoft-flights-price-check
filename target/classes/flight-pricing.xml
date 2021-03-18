@@ -9,15 +9,19 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 		<http:listener doc:name="Listener" doc:id="fd4f7dd8-439f-4988-b8ee-33cf32d9657d" config-ref="HTTP_Listener_config" path="/flights">
 			<reconnect />
 		</http:listener>
+		<set-variable value="#[attributes.queryParams.source]" doc:name="airline takeoff point" doc:id="63cbffa4-7e0b-4328-8039-55f86fe7223d" variableName="source"/>
+		<set-variable value="#[attributes.queryParams.destination]" doc:name="airline destination" doc:id="a6c15b13-c3fb-4df7-a766-c498998f9117" variableName="destination"/>
 		<ee:transform doc:name="Transform Message" doc:id="0ec46fa1-b2a8-4679-beaa-45ade8725021" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
 import java!com::innovativeapps::manager::FlightsPriceManager
 output application/json
+var source = vars.source as String
+var destination = vars.destination as String
 ---
 {
-	flightDetails: FlightsPriceManager::FlightPriceAnalysis(),
-	flightsList: FlightsPriceManager::getFlightsOffer()
+	flightDetails: FlightsPriceManager::getFlightPriceAnalysis(source, destination)
+	flightsList: FlightsPriceManager::getFlightPriceAnalysis(source, destination)
 } ]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
